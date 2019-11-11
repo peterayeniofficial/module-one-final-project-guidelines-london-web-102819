@@ -10,18 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2019_11_11_164053) do
+ActiveRecord::Schema.define(version: 4) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "month"
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-
+  end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.string "name"
+    t.integer "amount"
+    t.integer "user_id"
+    t.integer "budget_id"
+    t.integer "category_id"
   end
 
   create_table "users", force: :cascade do |t|
