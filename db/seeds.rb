@@ -3,7 +3,7 @@
 20.times do
   name = Faker::FunnyName.two_word_name
   email = Faker::Internet.email
-  Faker::Lorem.characters(number: 10, min_alpha: 4, min_numeric: 1)    
+  password = Faker::Lorem.characters(number: 10, min_alpha: 4, min_numeric: 1)    
   User.create(
     name: name,
     email: email,
@@ -50,9 +50,10 @@ Category.create(name: "Savings")
   amount = Faker::Number.decimal(l_digits: 2)
 
   Expense.create( 
-    name: "Pizza", 
+    name: expense_name,
     amount: amount, 
     user_id: User.all.sample.id, 
     budget_id: Budget.all.sample.id, 
     category_id: Category.all.sample.id,
+  )
 end
