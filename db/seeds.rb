@@ -45,15 +45,16 @@ Category.create(name: "Savings")
 
 # Add Expenses
 
-50.times do
-  expense_name = Faker::FunnyName.name
+
+5.times do
+  groceries = []
   amount = Faker::Number.decimal(l_digits: 2)
 
   Expense.create( 
-    name: expense_name,
+    name: groceries.sample,
     amount: amount, 
     user_id: User.all.sample.id, 
     budget_id: Budget.all.sample.id, 
-    category_id: Category.all.sample.id,
+    category_id: 1,
   )
 end
