@@ -7,21 +7,21 @@ module Controller
 
   def create_account
    
-    puts "Welcome to Budgety Please enter the following info to get started"
-    puts "Please Enter your Full Name"
+    puts "Welcome to Budgety! Please enter the following information to get started."
+    puts "Please enter your full name:"
     name = gets.chomp
-    puts "Please Enter your Email: example@gmail.com"
+    puts "Please enter your email address:"
     email = gets.chomp
-    puts "Please Enter your password"
+    puts "Please enter a password:"
     password = gets.chomp
 
     sign_up(name, email, password)
   end
 
   def log_in
-    puts "Please Enter your Email: example@gmail.com"
+    puts "Please enter your email address:"
     email = gets.chomp
-    puts "Please Enter your password"
+    puts "Please enter your password:"
     password = gets.chomp
 
     sign_in(email, password)
