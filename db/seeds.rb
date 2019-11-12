@@ -1,6 +1,6 @@
 # Add Users
 
-20.times do
+7.times do
   name = Faker::FunnyName.two_word_name
   email = Faker::Internet.email
   password = Faker::Lorem.characters(number: 10, min_alpha: 4, min_numeric: 1)    
@@ -12,8 +12,8 @@
 end
 
 # Add budgets
-30.times do
-  amount = Faker::Number.decimal(l_digits: 2)
+5.times do
+  amount = Faker::Number.decimal(l_digits: 4)
   months = [
     "January", 
     "February", 
@@ -35,25 +35,39 @@ end
 end
 
 # ADD categories
-Category.create(name: "Groceries")
-Category.create(name: "Transportation")
-Category.create(name: "Utilities")
-Category.create(name: "Entertainment")
-Category.create(name: "Housing")
-Category.create(name: "Savings")
+Category.create(name: "Groceries") #1
+Category.create(name: "Transportation") #2
+Category.create(name: "Utilities")#3
+Category.create(name: "Entertainment") #4
+Category.create(name: "Housing") #5
+Category.create(name: "Savings") #6
 
 
 # Add Expenses
 
-50.times do
-  expense_name = Faker::FunnyName.name
+
+5.times do
+  groceries = ["Milk", "Toothpaste", "Celery", "Mustad", "Eggs", "Shaving Cream", "Body Cream"]
   amount = Faker::Number.decimal(l_digits: 2)
 
   Expense.create( 
-    name: expense_name,
+    name: groceries.sample,
     amount: amount, 
     user_id: User.all.sample.id, 
     budget_id: Budget.all.sample.id, 
-    category_id: Category.all.sample.id,
+    category_id: 1,
+  )
+end
+
+5.times do
+  utilities = ["Internet", "Water", "Electricity"]
+  amount = Faker::Number.decimal(l_digits: 2)
+
+  Expense.create( 
+    name: utilities.sample,
+    amount: amount, 
+    user_id: User.all.sample.id, 
+    budget_id: Budget.all.sample.id, 
+    category_id: 3,
   )
 end
