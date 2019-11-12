@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 4) do
+ActiveRecord::Schema.define(version: 5) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "month"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 4) do
     t.string "name"
     t.string "email"
     t.string "password"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
 end
