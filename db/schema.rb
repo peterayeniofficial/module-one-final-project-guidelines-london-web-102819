@@ -29,7 +29,9 @@ ActiveRecord::Schema.define(version: 7) do
     t.string "name"
     t.integer "amount"
     t.integer "budget_id"
-    t.datetime "date"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
