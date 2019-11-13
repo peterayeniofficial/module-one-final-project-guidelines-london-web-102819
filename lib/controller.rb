@@ -1,4 +1,4 @@
-require_relative '../lib/user_controller.rb'
+require_relative "../lib/user_controller.rb"
 
 module Controller
   include UserController
@@ -6,7 +6,6 @@ module Controller
   $user = nil
 
   def create_account
-   
     puts "Welcome to Budgety! Please enter the following information to get started."
     puts "Please enter your full name:"
     name = gets.chomp
@@ -31,6 +30,26 @@ module Controller
     $user = nil
   end
 
+  def data_for_new_budget
+    $user = User.firstJanuary
+    puts "Please Enter Month"
+    month = gets.chomp
+    puts "Please Enter Amount"
+    amount = gets.chomp
+    create_budget(month, amount)
+  end
 
-  
+  def create_budget(month, amount)
+    Budget.create(month: month, amount: amount)
+  end
+
+  def users_budgets
+    remaining amount = 0
+    all_expenses = Expenses.select { |e|
+      e.user_id == self
+    }
+    all_budgets = all_expenses.map { |e|
+      e.budget_id
+    }
+  end
 end

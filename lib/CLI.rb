@@ -1,9 +1,10 @@
-require_relative '../lib/controller.rb'
+require_relative "../lib/controller.rb"
+
 class CommandLineInterface
   include Controller
 
   def run
     puts "Welcome to Budgety"
-    log_in
+    data_for_new_budget
   end
 end
