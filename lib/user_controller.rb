@@ -5,7 +5,6 @@ module UserController
   end
 
   def login_check(email, password)
-    
     get_user = User.find_by(email: email, password:password)
     if get_user == nil
       return false
