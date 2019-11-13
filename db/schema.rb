@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 5) do
+ActiveRecord::Schema.define(version: 6) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "month"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.integer "user_id"
     t.integer "budget_id"
     t.integer "category_id"
+    t.datetime "date"
   end
 
   create_table "users", force: :cascade do |t|
