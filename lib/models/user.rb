@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :expenses, through: :budgets
 
 
+
   def self.create_user(name, email, password)
     self.create(name: name, email: email, password: password)
   end
