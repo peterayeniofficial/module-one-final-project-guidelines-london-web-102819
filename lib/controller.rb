@@ -31,7 +31,7 @@ module Controller
   end
 
   def data_for_new_budget
-    $user = User.firstJanuary
+    $user = User.first
     puts "Please Enter Month"
     month = gets.chomp
     puts "Please Enter Amount"
@@ -40,16 +40,6 @@ module Controller
   end
 
   def create_budget(month, amount)
-    Budget.create(month: month, amount: amount)
-  end
-
-  def users_budgets
-    remaining amount = 0
-    all_expenses = Expenses.select { |e|
-      e.user_id == self
-    }
-    all_budgets = all_expenses.map { |e|
-      e.budget_id
-    }
+    Budget.create(month: month, amount: amount, remaining_amount: amount)
   end
 end
