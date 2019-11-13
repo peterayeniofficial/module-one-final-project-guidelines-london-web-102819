@@ -1,4 +1,5 @@
 require_relative "../lib/user_controller.rb"
+require_all "lib"
 
 module Controller
   include UserController
@@ -42,27 +43,9 @@ module Controller
     $budget = Budget.create(month: month, amount: amount, remaining_amount: amount)
   end
 
-  def data_for_new_expense
-    $user = User.first
-    user = $user
-    budget = Budget.last
-    puts "Please enter name of expense:"
-    name = gets.chomp 
-    puts "Please choose category:"
-    category = Category.first
-    puts "Please enter amount:"
-    amount = gets.chomp 
-    budget = $budget
-
-    create_expense(name, amount, user, budget, category)
+  def create_expense(name, amount, budget, category)
+    Expense.create(name: name, amount: amount, budget_id: budget, category: category)
   end 
-
-  def create_expense(name, amount, user, budget, category)
-    Expense.create(name: name, amount: amount, user_id: user, budget_id: budget, category: category)
-  end 
-
-  def update_remaining_amount(amount, budget)
-    Budget.remaining_amount -= amount
-  end
+  
 
 end

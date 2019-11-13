@@ -9,7 +9,6 @@ class User < ActiveRecord::Base
     else
       get_user
     end
-
   end
   
 end
