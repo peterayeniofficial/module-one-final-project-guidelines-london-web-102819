@@ -1,13 +1,15 @@
 class User < ActiveRecord::Base
-  has_many :expenses
-  has_many :budgets, through: :expenses
+  has_many :budgets
+  has_many :expenses, through: :budgets
+  
+  def self.login_check(email, password)
+    get_user = User.find_by(email: email, password:password)
+    if get_user == nil
+      return false
+    else
+      get_user
+    end
 
-  def all_expenses
-    Expenses.all.map { |e| b.user_id == self.id }
   end
-
-  def month_expenses(month)
-    all_expenses.map { |e| e.budget.month == month }
-  end 
   
 end

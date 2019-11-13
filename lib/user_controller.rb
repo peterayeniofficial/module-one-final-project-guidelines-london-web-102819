@@ -4,15 +4,7 @@ module UserController
     User.create(name: name, email: email, password: password)
   end
 
-  def login_check(email, password)
-    get_user = User.find_by(email: email, password:password)
-    if get_user == nil
-      return false
-    else
-      get_user
-    end
-
-  end
+  
 
   def sign_in(email, password)
     user = login_check(email, password)

@@ -30,7 +30,9 @@ end
   ]
   Budget.create(
     month: months.sample,
-    amount: amount
+    amount: amount,
+    remaining_amount: amount,
+    user_id: User.all.sample.id
   )
 end
 
@@ -53,9 +55,7 @@ Category.create(name: "Savings") #6
   Expense.create( 
     name: groceries.sample,
     amount: amount, 
-    user_id: User.all.sample.id, 
     budget_id: Budget.all.sample.id, 
-    category_id: 1,
   )
 end
 
@@ -66,8 +66,6 @@ end
   Expense.create( 
     name: utilities.sample,
     amount: amount, 
-    user_id: User.all.sample.id, 
     budget_id: Budget.all.sample.id, 
-    category_id: 3,
   )
 end
