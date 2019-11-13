@@ -1,13 +1,13 @@
 require_relative "../lib/controller.rb"
+require_relative '../lib/view.rb'
+
 
 class CommandLineInterface
   include Controller
-
-  @user = nil
-  @budget = nil
+  include View
 
   def run
     puts "Welcome to Budgety"
-    data_for_new_expense
+    welcome_screen
   end
 end

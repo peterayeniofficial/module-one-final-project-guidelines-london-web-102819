@@ -1,6 +1,7 @@
 require "io/console"
 require "bundler"
 require "faker"
+require "tty-prompt"
 Bundler.require
 
 ActiveRecord::Base.establish_connection(
