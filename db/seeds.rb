@@ -1,6 +1,6 @@
 # Add Users
 
-7.times do
+2.times do
   name = Faker::FunnyName.two_word_name
   email = Faker::Internet.email
   password = Faker::Lorem.characters(number: 10, min_alpha: 4, min_numeric: 1)    
@@ -36,15 +36,6 @@ end
   )
 end
 
-# ADD categories
-Category.create(name: "Groceries") #1
-Category.create(name: "Transportation") #2
-Category.create(name: "Utilities")#3
-Category.create(name: "Entertainment") #4
-Category.create(name: "Housing") #5
-Category.create(name: "Savings") #6
-
-
 # Add Expenses
 
 
@@ -56,6 +47,7 @@ Category.create(name: "Savings") #6
     name: groceries.sample,
     amount: amount, 
     budget_id: Budget.all.sample.id, 
+    category: "Groceries"
   )
 end
 
@@ -67,5 +59,6 @@ end
     name: utilities.sample,
     amount: amount, 
     budget_id: Budget.all.sample.id, 
+    category: "Utilities"
   )
 end
