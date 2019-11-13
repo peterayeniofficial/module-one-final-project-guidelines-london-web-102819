@@ -12,4 +12,12 @@ class User < ActiveRecord::Base
     self.find_by(email: email, password:password)
   end
 
+  def add_budget(month, amount, id)
+    Budget.create(month: month, amount: amount, user_id: id, remaining_amount: amount)
+  end
+
+  def add_expenses(name, amount, id, category)
+    Expense.new(name: name, amount: amount, budget_id: id, category: category)
+  end
+
 end
