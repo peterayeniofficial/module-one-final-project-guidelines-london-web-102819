@@ -1,22 +1,22 @@
 require_relative "../lib/controller.rb"
-require 'pry'
+require_relative '../lib/view.rb'
+
 require_all "lib"
+
 
 class CommandLineInterface
   include Controller
-
-  @user = nil
-  @budget = nil
+  include View
 
   def run
     puts "Welcome to Budgety"
-    data_for_new_expense
+    welcome_screen
   end
 
   def data_for_new_expense
     @budget = Budget.first
     budget = @budget.id
-    #binding.pry
+
     puts "Please enter name of expense:"
     name = gets.chomp 
     puts "Please choose category:"
