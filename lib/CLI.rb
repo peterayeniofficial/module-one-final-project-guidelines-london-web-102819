@@ -7,7 +7,7 @@ class CommandLineInterface
   include View
 
   def run
-    puts "Welcome to Budgety"
+    puts "Welcome to Budgety!"
     welcome_screen
   end
 
