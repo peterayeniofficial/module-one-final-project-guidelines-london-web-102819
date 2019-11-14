@@ -195,6 +195,10 @@ module Controller
         dashboard
       end
     end
-
   end 
+
+  def update_expense
+    
+  end 
+
 end
