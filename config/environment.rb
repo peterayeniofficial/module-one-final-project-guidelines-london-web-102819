@@ -3,6 +3,7 @@ require "bundler"
 require "faker"
 require "tty-prompt"
 require "pry"
+require 'tty-table'
 
 Bundler.require
 
