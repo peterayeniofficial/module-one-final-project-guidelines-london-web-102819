@@ -27,8 +27,8 @@ module Controller
   def create_account
     brand
 
-    name = @@prompt.ask('What is your name?', required: true) do |q|
-      q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, 'Please enter First & Last Name Only')
+    name = @@prompt.ask("What is your name?", required: true) do |q|
+      q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, "Please enter First & Last Name Only")
     end
 
     email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
@@ -65,8 +65,12 @@ module Controller
   end
 
   def main_menu
-
     choices = ["Add a Budget", "Add Expenses", "My Budgets", "My Expenses", "Log Out", "Delete Account"]
+    if @owner.has_budget == false
+      choices.delete_at(1)
+      choices.delete_at(1)
+      choices.delete_at(1)
+    end
     input = @@prompt.select("\nWhat will you like to do?", choices)
     if input == "Add a Budget"
       create_budget_display
@@ -81,7 +85,6 @@ module Controller
     elsif input == "My Expenses"
       my_expenses_display
       my_expenses
-      
     elsif input == "Log Out"
       sign_out
     elsif input == "Delete Account"
@@ -121,7 +124,7 @@ module Controller
   def add_budget
     choices = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     month = @@prompt.select("Please select Month", choices)
-    amount = @@prompt.ask('Please Enter Amount', required: true, convert: :float)
+    amount = @@prompt.ask("Please Enter Amount", required: true, convert: :float)
     @owner.add_budget(month, amount)
     my_budgets
     main_menu
@@ -141,24 +144,23 @@ module Controller
 
   def add_expense
     my_budgets
-    id = @@prompt.ask('Please enter the ID of the Budget you are spending from?', required: true)
-    this_budget = @owner.budgets.find_by(id: id) 
+    id = @@prompt.ask("Please enter the ID of the Budget you are spending from?", required: true)
+    this_budget = @owner.budgets.find_by(id: id)
     if this_budget == nil
       puts "You don't have budget with that ID please add a new budget"
       main_menu
     else
-      name = @@prompt.ask('What are you buying?', required: true)
+      name = @@prompt.ask("What are you buying?", required: true)
       choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Housing", "Savings"]
       category = @@prompt.select("Please select Category", choices)
-      amount = @@prompt.ask('Please Enter Amount', required: true, convert: :float)
+      amount = @@prompt.ask("Please Enter Amount", required: true, convert: :float)
       new_amount = this_budget.remaining_amount.to_i - amount
       this_budget.update(remaining_amount: new_amount)
       this_budget.save
       @owner.add_expenses(name, amount, id, category)
-    
+
       my_expenses
     end
-
   end
 
   def my_expenses
@@ -168,5 +170,4 @@ module Controller
     render_expenses(@owner.expenses)
     main_menu
   end
-  
 end
