@@ -1,5 +1,6 @@
-require_relative "../lib/controller.rb"
 require_relative "../lib/view.rb"
+require_relative "../lib/controller.rb"
+
 require_all "lib"
 
 class CommandLineInterface
