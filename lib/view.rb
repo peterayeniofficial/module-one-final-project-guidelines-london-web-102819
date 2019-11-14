@@ -50,15 +50,14 @@ ______           _            _
 
   def my_budgets_display
     puts "
-    __  __         ____            _            _       
-    |  \/  |       |  _ \          | |          | |      
-    | \  / |_   _  | |_) |_   _  __| | __ _  ___| |_ ___ 
-    | |\/| | | | | |  _ <| | | |/ _` |/ _` |/ _ | __/ __|
-    | |  | | |_| | | |_) | |_| | (_| | (_| |  __| |_\__ \
-    |_|  |_|\__, | |____/ \__,_|\__,_|\__, |\___|\__|___/
-             __/ |                     __/ |             
-            |___/                     |___/              
-    
+       __  __         ____            _            _       
+ |  \/  |       |  _ \          | |          | |      
+ | \  / |_   _  | |_) |_   _  __| | __ _  ___| |_ ___ 
+ | |\/| | | | | |  _ <| | | |/ _` |/ _` |/ _ | __/ __|
+ | |  | | |_| | | |_) | |_| | (_| | (_| |  __| |_\__ \
+ |_|  |_|\__, | |____/ \__,_|\__,_|\__, |\___|\__|___/
+          __/ |                     __/ |             
+         |___/                     |___/              
     "
   end
 
@@ -86,4 +85,20 @@ ______           _            _
                                                                         
                                                                      "   
   end
+
+  def render_budgets(budgets)
+    budgets.each do |budget| 
+      puts budget.id.to_s.ljust(17) + budget.month.ljust(17) + "£"+ budget.amount.to_s.ljust(10) + "£"+ budget.remaining_amount.to_s
+      puts "--------------------------------------------------------------\n"
+    end
+  end
+
+  def render_expenses(expenses)
+    expenses.each do |expense| 
+      puts expense.id.to_s.ljust(17) + expense.name.ljust(19) + "£"+ expense.amount.to_s.ljust(13) + expense.category.ljust(16) + expense.budget.month
+      puts "---------------------------------------------------------------------------------\n"
+    end
+  end
+
+
 end

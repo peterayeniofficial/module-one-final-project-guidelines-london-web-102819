@@ -26,8 +26,9 @@ module Controller
 
   def create_account
     brand
-    name = @@prompt.ask("What is your name?", required: true) do |q|
-      q.validate /\A[a-zA-Z0-9]*\z/
+
+    name = @@prompt.ask('What is your name?', required: true) do |q|
+      q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, 'Please enter First & Last Name Only')
     end
 
     email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
@@ -65,52 +66,30 @@ module Controller
 
   def main_menu
 
-    # Show the main menu until the user leaves by choosing to sign out
-    finish = false
-    while finish == false
-      choices = ["Add a Budget", "Add Expenses", "My Budgets", "My Expenses", "Log Out", "Delete Account"]
-
-      # if user does not have a budget, we should not show the "Add Expenses" option
-      if @owner.has_budget == false
-        choices.delete_at(1)
-      end
-
-      input = @@prompt.select("Please select a menu to get started", choices)
-
-      if input == "Add a Budget"
-        create_budget_display
-        puts "Please enter the month"
-        month = gets.chomp
-        puts "please enter the amount"
-        amount = gets.chomp
-        @owner.add_budget(month, amount.to_i)
-        "Add Budget"
-      elsif input == "Add Expenses"
-        add_expenses_display
-        process_add_expense
-
-        "Add Expense"
-      elsif input == "My Budgets"
-        my_budgets_display
-        budgets_description = @owner.my_budgets.map { |budget| "#{budget.month}: Total amount of budget: #{budget.amount}£ | Remaining amount: #{budget.remaining_amount}£" }
-        puts budgets_description
-        puts ""
-        puts ""
-        "Budgets"
-      elsif input == "My Expenses"
-        my_expenses_display
-        "Expenses"
-      elsif input == "Log Out"
-        sign_out
-        finish = true
-      elsif input == "Delete Account"
-        delete_account_display
-        puts "\n\n"
-        delete_account
-        finish = true
-      else
-        "Save now, Enjoy Later"
-      end
+    choices = ["Add a Budget", "Add Expenses", "My Budgets", "My Expenses", "Log Out", "Delete Account"]
+    input = @@prompt.select("\nWhat will you like to do?", choices)
+    if input == "Add a Budget"
+      create_budget_display
+      add_budget
+    elsif input == "Add Expenses"
+      add_expenses_display
+      add_expense
+    elsif input == "My Budgets"
+      my_budgets_display
+      my_budgets
+      main_menu
+    elsif input == "My Expenses"
+      my_expenses_display
+      my_expenses
+      
+    elsif input == "Log Out"
+      sign_out
+    elsif input == "Delete Account"
+      delete_account_display
+      puts "\n\n"
+      delete_account
+    else
+      "Save now, Enjoy Later"
     end
   end
 
@@ -133,25 +112,61 @@ module Controller
     input = @@prompt.yes?("Are you sure you want to delete your Account?")
     if input == "yes"
       @owner.destroy
+      sign_out
     else
       dashboard
     end
   end
 
-  def data_for_new_budget
-    $user = User.first
-    puts "Please Enter Month"
-    month = gets.chomp
-    puts "Please Enter Amount"
-    amount = gets.chomp
-    create_budget(month, amount)
+  def add_budget
+    choices = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    month = @@prompt.select("Please select Month", choices)
+    amount = @@prompt.ask('Please Enter Amount', required: true, convert: :float)
+    @owner.add_budget(month, amount)
+    my_budgets
+    main_menu
   end
 
-  def create_budget(month, amount)
-    $budget = Budget.create(month: month, amount: amount, remaining_amount: amount)
+  def my_budgets
+    puts "Kindly find your budgets bellow: #{@owner.name}"
+    puts "===============================================\n"
+    puts "\nBudget ID      | Month      | Amount      | Remaining Amount\n\n"
+    render_budgets(@owner.budgets)
+    # header = ["Month", "Amount", "Remaining Amount"]
+    # rows = [['aaa1', 'aa2', 'aaaaaaa3'], ['b1', 'b2', 'b3']]
+    # table = TTY::Table.new header, rows
+    # table.render  width: 80, resize: true
+    # main_menu
   end
 
-  def create_expense(name, amount, budget, category)
-    Expense.create(name: name, amount: amount, budget_id: budget, category: category)
+  def add_expense
+    my_budgets
+    id = @@prompt.ask('Please enter the ID of the Budget you are spending from?', required: true)
+    this_budget = @owner.budgets.find_by(id: id) 
+    if this_budget == nil
+      puts "You don't have budget with that ID please add a new budget"
+      main_menu
+    else
+      name = @@prompt.ask('What are you buying?', required: true)
+      choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Housing", "Savings"]
+      category = @@prompt.select("Please select Category", choices)
+      amount = @@prompt.ask('Please Enter Amount', required: true, convert: :float)
+      new_amount = this_budget.remaining_amount.to_i - amount
+      this_budget.update(remaining_amount: new_amount)
+      this_budget.save
+      @owner.add_expenses(name, amount, id, category)
+    
+      my_expenses
+    end
+
   end
+
+  def my_expenses
+    puts "Kindly find your expenses bellow: #{@owner.name}"
+    puts "===============================================\n"
+    puts "\nExpense ID      | Name          | Amount      | Category     | Budget Month\n\n"
+    render_expenses(@owner.expenses)
+    main_menu
+  end
+  
 end

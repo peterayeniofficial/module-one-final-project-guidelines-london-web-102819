@@ -2,12 +2,6 @@ class User < ActiveRecord::Base
   has_many :budgets
   has_many :expenses, through: :budgets
 
-  def has_budget #added
-    Budget.all.any? { |b|
-      b.user_id == self.id
-    }
-  end
-
   def self.create_user(name, email, password)
     self.create(name: name, email: email, password: password)
   end
@@ -22,11 +16,12 @@ class User < ActiveRecord::Base
     }
   end
 
-  def my_budgets
-    Budget.all.select { |b|
-      b.user_id == self.id
-    }
+  def add_budget(month, amount)
+    Budget.create(month: month, amount: amount, user_id: self.id, remaining_amount: amount)
   end
+
+  def add_expenses(name, amount, id, category)
+    Expense.create(name: name, amount: amount, budget_id: id, category: category)
 
   def get_budget_for_month(month)
     my_budgets.find { |b| b.month == month }
