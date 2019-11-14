@@ -78,7 +78,7 @@ module Controller
   def budget_menu
     choices = ["Update budget", "Delete budget", "Go back"]
     input = @@prompt.select("\nPlease select an option:", choices)
-    if input == "Update Budget"
+    if input == "Update budget"
       id = @@prompt.ask("Please Enter the ID of the budget you want to update", required: true).to_i
       budget = @owner.budgets.find_by(id: id)
       amount = @@prompt.ask("Please Enter the Amount", required: true).to_f
@@ -89,10 +89,30 @@ module Controller
       budget.update(remaining_amount: rem_amount)
       my_budgets
       budget_menu
-    elsif input == "Delete Budget"
+    elsif input == "Delete budget"
       delete_budget
     else
       main_menu
+    end
+  end
+
+  def delete_budget
+    choices = ["Yes", "No"]
+    my_budgets
+    id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true).to_i
+    budget = @owner.budgets.find_by(id: id)
+    if budget == nil
+      puts "You don't have budget with that ID. Please select another ID."
+      #main_menu
+    else
+      choices = ["Yes", "No"]
+      input = @@prompt.select("Are you sure you want to delete your budget?", choices)
+      if input == "Yes"
+        budget.destroy
+        dashboard
+      else
+        dashboard
+      end
     end
   end
 
@@ -105,7 +125,6 @@ module Controller
       amount = @@prompt.ask("Please enter the amount", required: true).to_f
       total_expenses = all_expenses_budget(id)
       rem_amount = amount - total_expenses
-      # binding.pry
       budget.update(amount: amount)
       budget.update(remaining_amount: rem_amount)
       my_budgets
@@ -256,25 +275,5 @@ module Controller
         dashboard
       end
     end
-  end 
-
-
-    def delete_budget
-      my_budgets
-      id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true)
-      budget = @owner.budget.find_by(id: id)
-      if budget == nil
-        puts "You don't have budget with that ID. Please select another ID."
-        #main_menu
-      else
-        choices = ["Yes", "No"]
-        input = @@prompt.select("Are you sure you want to delete your account?", choices)
-        if input == "Yes"
-          budget.destroy
-        else
-          dashboard
-        end
-      end
   end
-
 end
