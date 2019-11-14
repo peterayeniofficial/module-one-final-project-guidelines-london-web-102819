@@ -74,9 +74,11 @@ module Controller
     elsif input == "My Budgets"
       my_budgets_display
       my_budgets
+      main_menu
     elsif input == "My Expenses"
       my_expenses_display
       my_expenses
+      
     elsif input == "Log Out"
       sign_out
     elsif input == "Delete Account"
@@ -122,8 +124,7 @@ module Controller
     # rows = [['aaa1', 'aa2', 'aaaaaaa3'], ['b1', 'b2', 'b3']]
     # table = TTY::Table.new header, rows
     # table.render  width: 80, resize: true
-    main_menu
-    
+    # main_menu
   end
 
   def add_expense
