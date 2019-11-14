@@ -228,10 +228,8 @@ module Controller
         dashboard
       end
     end
+  end 
 
-    # def update_budget(new_amount)
-    #   self.update_at(amount: new_amount).save
-    # end
 
     def delete_budget
       my_expenses
@@ -251,4 +249,5 @@ module Controller
       end
     end
   end
+
 end
