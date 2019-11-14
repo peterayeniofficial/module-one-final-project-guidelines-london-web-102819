@@ -123,10 +123,9 @@ module Controller
       id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true).to_i
       expense = @owner.expenses.find_by(id: id)
       amount = @@prompt.ask("Please enter the amount", required: true).to_f
-      total_expenses = all_expenses_budget(id)
-      rem_amount = amount - total_expenses
-      budget.update(amount: amount)
-      budget.update(remaining_amount: rem_amount)
+      budget = Budget.all.find { |b| b.id == expense.budget_id }
+      budget.update_expense(expense, amount)
+
       my_budgets
       budget_menu
     elsif input == "Delete expense"
@@ -137,8 +136,9 @@ module Controller
   end
 
   def main_menu
-    choices = ["Create a budget", "Add an expense", "My budgets", "My expenses", "Log out", "Delete account"]
+    choices = ["Create a budget", "Add an expense", "My budgets", "My expenses", "Stats", "Log out", "Delete account"]
     if @owner.has_budget == false
+      choices.delete_at(1)
       choices.delete_at(1)
       choices.delete_at(1)
       choices.delete_at(1)
@@ -159,6 +159,8 @@ module Controller
       my_expenses_display
       my_expenses
       expense_menu
+    elsif input == "Stats"
+      show_most_spent_category
     elsif input == "Log out"
       sign_out
     elsif input == "Delete account"
@@ -168,6 +170,25 @@ module Controller
     else
       "Save now, Enjoy Later"
     end
+  end
+
+  def show_most_spent_category
+    category_totalAmount = {}
+    all_expenses = @owner.get_all_expenses.each { |e|
+      if category_totalAmount.key?(e.category) == false
+        category_totalAmount[e.category] = 0
+      end
+      category_totalAmount[e.category] += e.amount
+    }
+
+    most_spent_category = category_totalAmount.max_by { |cat, total_amount| total_amount }
+    min_spent_category = category_totalAmount.min_by { |cat, total_amount| total_amount }
+
+    show_stats_display
+    puts "===============================================\n\n"
+    puts "#{most_spent_category[0]} is the category where you have spent more money. You have spent a total of #{most_spent_category[1]}£ in this category."
+    puts "#{min_spent_category[0]} is the category where you have spent less money. You have spent a total of #{min_spent_category[1]}£ in this category."
+    main_menu
   end
 
   def process_add_expense
