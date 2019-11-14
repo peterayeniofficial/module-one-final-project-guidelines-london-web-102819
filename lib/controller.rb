@@ -76,8 +76,8 @@ module Controller
   end
 
   def budget_menu
-    choices = ["Update Budget", "Delete Budget", "Go back"]
-    input = @@prompt.select("\nWhat will you like to do?", choices)
+    choices = ["Update budget", "Delete budget", "Go back"]
+    input = @@prompt.select("\nPlease select an option:", choices)
     if input == "Update Budget"
       id = @@prompt.ask("Please Enter the ID of the budget you want to update", required: true).to_i
       budget = @owner.budgets.find_by(id: id)
@@ -91,6 +91,27 @@ module Controller
       budget_menu
     elsif input == "Delete Budget"
       delete_budget
+    else
+      main_menu
+    end
+  end
+
+  def expense_menu
+    choices = ["Update expense", "Delete expense", "Go back"]
+    input = @@prompt.select("\nPlease select an option:", choices)
+    if input == "Update expense"
+      id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true).to_i
+      expense = @owner.expenses.find_by(id: id)
+      amount = @@prompt.ask("Please enter the amount", required: true).to_f
+      total_expenses = all_expenses_budget(id)
+      rem_amount = amount - total_expenses
+      # binding.pry
+      budget.update(amount: amount)
+      budget.update(remaining_amount: rem_amount)
+      my_budgets
+      budget_menu
+    elsif input == "Delete expense"
+      delete_expense
     else
       main_menu
     end
@@ -118,6 +139,7 @@ module Controller
     elsif input == "My expenses"
       my_expenses_display
       my_expenses
+      expense_menu
     elsif input == "Log out"
       sign_out
     elsif input == "Delete account"
@@ -142,17 +164,6 @@ module Controller
     brand
     puts "Welcome #{@owner.name}!"
     main_menu
-  end
-
-  def delete_account
-    choices = ["Yes", "No"]
-    input = @@prompt.select("Are you sure you want to delete your account?", choices)
-    if input == "Yes"
-      @owner.destroy
-      sign_out
-    else
-      dashboard
-    end
   end
 
   def add_budget
@@ -201,6 +212,7 @@ module Controller
       # @owner.add_expenses(name, amount, id, category)
 
       my_expenses
+      main_menu
     end
   end
 
@@ -210,20 +222,34 @@ module Controller
     puts "\nExpense ID      | Name          | Amount      | Category     | Budget Month\n\n"
     @owner.expenses.reload
     render_expenses(@owner.expenses)
-    main_menu
+    #main_menu
+  end
+
+  def delete_account
+    choices = ["Yes", "No"]
+    input = @@prompt.select("Are you sure you want to delete your account?", choices)
+    if input == "Yes"
+      @owner.destroy
+      sign_out
+    else
+      dashboard
+    end
   end
 
   def delete_expense
+    choices = ["Yes", "No"]
     my_expenses
-    id = @@prompt.ask("Please enter the ID of the expense you want to delete?", required: true)
+    id = @@prompt.ask("Please enter the ID of the expense you want to delete?", required: true).to_i
     expense = @owner.expenses.find_by(id: id)
     if expense == nil
       puts "You don't have an expense with that ID. Please select another ID."
-      #main_menu
+      delete_expense
     else
-      input = @@prompt.yes?("Are you sure you want to delete this expense?")
-      if input == "yes"
+      input = @@prompt.select("Are you sure you want to delete this expense?", choices)
+      if input == "Yes"
         expense.destroy
+        puts "Your expense has been deleted."
+        dashboard
       else
         dashboard
       end
@@ -232,7 +258,7 @@ module Controller
 
 
     def delete_budget
-      my_expenses
+      my_budgets
       id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true)
       budget = @owner.budget.find_by(id: id)
       if budget == nil
@@ -247,7 +273,6 @@ module Controller
           dashboard
         end
       end
-    end
   end
 
 end
