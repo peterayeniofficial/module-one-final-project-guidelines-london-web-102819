@@ -11,29 +11,29 @@ module Controller
   def welcome_screen
     system("clear")
     brand
-    choices = ["Create Account", "Login", "Quit"]
-    input = @@prompt.select("Please select a menu to get started", choices)
+    choices = ["Create account", "Log in", "Quit"]
+    input = @@prompt.select("Please select an option to get started", choices)
     finish = false
 
-    if input == "Create Account"
+    if input == "Create account"
       create_account
-    elsif input == "Login"
+    elsif input == "Log in"
       log_in
     else
-      puts "Good Bye"
+      puts "Goodbye!"
     end
   end
 
   def create_account
     brand
 
-    name = @@prompt.ask("What is your name?", required: true) do |q|
-      q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, "Please enter First & Last Name Only")
+    name = @@prompt.ask("Please enter your full name:", required: true) do |q|
+      q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, "Please enter first & last name only.")
     end
 
-    email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
+    email = @@prompt.ask("Please enter your email address:", required: true) { |q| q.validate :email }
 
-    password = @@prompt.mask("Choose a password?", required: true) do |q|
+    password = @@prompt.mask("Please choose a password:", required: true) do |q|
       q.validate(/\A[a-zA-Z0-9]*\z{5,15}/)
     end
     @owner = User.create_user(name, email, password)
@@ -45,15 +45,15 @@ module Controller
   end
 
   def log_in
-    email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
+    email = @@prompt.ask("What is your email address?", required: true) { |q| q.validate :email }
 
-    password = @@prompt.mask("What is your password?", required: true) do |q|
+    password = @@prompt.mask("Please enter your password:", required: true) do |q|
       q.validate(/\A[a-zA-Z0-9]*\z{5,15}/)
     end
     @owner = User.login_check(email, password)
     if @owner == nil
-      puts "You don't have account with us please: Create Account"
-      create_account
+      puts "There is no existing account with that email and password. Please re-enter your account details, or create a new account."
+      welcome_screen
     else
       dashboard
     end
@@ -65,29 +65,29 @@ module Controller
   end
 
   def main_menu
-    choices = ["Add a Budget", "Add Expenses", "My Budgets", "My Expenses", "Log Out", "Delete Account"]
+    choices = ["Create a budget", "Add an expense", "My budgets", "My expenses", "Log out", "Delete account"]
     if @owner.has_budget == false
       choices.delete_at(1)
       choices.delete_at(1)
       choices.delete_at(1)
     end
     input = @@prompt.select("\nWhat will you like to do?", choices)
-    if input == "Add a Budget"
+    if input == "Create a budget"
       create_budget_display
       add_budget
-    elsif input == "Add Expenses"
+    elsif input == "Add an expense"
       add_expenses_display
       add_expense
-    elsif input == "My Budgets"
+    elsif input == "My budgets"
       my_budgets_display
       my_budgets
       main_menu
-    elsif input == "My Expenses"
+    elsif input == "My expenses"
       my_expenses_display
       my_expenses
-    elsif input == "Log Out"
+    elsif input == "Log out"
       sign_out
-    elsif input == "Delete Account"
+    elsif input == "Delete account"
       delete_account_display
       puts "\n\n"
       delete_account
@@ -107,12 +107,12 @@ module Controller
 
   def dashboard
     brand
-    puts "#{@owner.name} Welcome"
+    puts "Welcome #{@owner.name}!"
     main_menu
   end
 
   def delete_account
-    input = @@prompt.yes?("Are you sure you want to delete your Account?")
+    input = @@prompt.yes?("Are you sure you want to delete your account?")
     if input == "yes"
       @owner.destroy
       sign_out
@@ -123,17 +123,17 @@ module Controller
 
   def add_budget
     choices = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    month = @@prompt.select("Please select Month", choices)
-    amount = @@prompt.ask("Please Enter Amount", required: true, convert: :float)
+    month = @@prompt.select("Please select a month:", choices)
+    amount = @@prompt.ask("Please enter the budget amount:", required: true, convert: :float)
     @owner.add_budget(month, amount)
     my_budgets
     main_menu
   end
 
   def my_budgets
-    puts "Kindly find your budgets bellow: #{@owner.name}"
+    puts "#{@owner.name}'s budgets"
     puts "===============================================\n"
-    puts "\nBudget ID      | Month      | Amount      | Remaining Amount\n\n"
+    puts "\nBudget ID      | Month      | Amount      | Remaining amount\n\n"
     @owner.budgets.reload
     render_budgets(@owner.budgets)
     # header = ["Month", "Amount", "Remaining Amount"]
@@ -145,16 +145,16 @@ module Controller
 
   def add_expense
     my_budgets
-    id = @@prompt.ask("Please enter the ID of the Budget you are spending from?", required: true)
+    id = @@prompt.ask("Please enter the ID of the budget your new expense is for?", required: true)
     this_budget = @owner.budgets.find_by(id: id)
     if this_budget == nil
-      puts "You don't have budget with that ID please add a new budget"
+      puts "You don't have budget with that ID, please add a new budget"
       main_menu
     else
       name = @@prompt.ask("What are you buying?", required: true)
-      choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Housing", "Savings"]
-      category = @@prompt.select("Please select Category", choices)
-      amount = @@prompt.ask("Please Enter Amount", required: true, convert: :float)
+      choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Clothing", "Housing", "Savings"]
+      category = @@prompt.select("Please select a category", choices)
+      amount = @@prompt.ask("Please enter amount", required: true, convert: :float)
       
       new_expense = @owner.add_expenses(name, amount, id, category)
       new_expense.budget.remaining_amount -= amount 
@@ -171,14 +171,30 @@ module Controller
     end
   end
 
-  
-
   def my_expenses
-    puts "Kindly find your expenses bellow: #{@owner.name}"
+    puts "#{@owner.name}'s expenses"
     puts "===============================================\n"
     puts "\nExpense ID      | Name          | Amount      | Category     | Budget Month\n\n"
     @owner.expenses.reload
     render_expenses(@owner.expenses)
     main_menu
   end
+
+  def delete_expense
+    my_expenses
+    id = @@prompt.ask("Please enter the ID of the expense you want to delete?", required: true)
+    expense = @owner.expenses.find_by(id: id)
+    if expense == nil
+      puts "You don't have an expense with that ID. Please select another ID."
+      #main_menu
+    else
+      input = @@prompt.yes?("Are you sure you want to delete this expense?")
+      if input == "yes"
+        expense.destroy
+      else
+        dashboard
+      end
+    end
+
+  end 
 end
