@@ -134,6 +134,7 @@ module Controller
     puts "Kindly find your budgets bellow: #{@owner.name}"
     puts "===============================================\n"
     puts "\nBudget ID      | Month      | Amount      | Remaining Amount\n\n"
+    @owner.budgets.reload
     render_budgets(@owner.budgets)
     # header = ["Month", "Amount", "Remaining Amount"]
     # rows = [['aaa1', 'aa2', 'aaaaaaa3'], ['b1', 'b2', 'b3']]
@@ -154,19 +155,29 @@ module Controller
       choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Housing", "Savings"]
       category = @@prompt.select("Please select Category", choices)
       amount = @@prompt.ask("Please Enter Amount", required: true, convert: :float)
-      new_amount = this_budget.remaining_amount.to_i - amount
-      this_budget.update(remaining_amount: new_amount)
-      this_budget.save
-      @owner.add_expenses(name, amount, id, category)
+      
+      new_expense = @owner.add_expenses(name, amount, id, category)
+      new_expense.budget.remaining_amount -= amount 
+      new_expense.budget.save
+      @owner.save
+
+      
+      # new_amount = this_budget.remaining_amount.to_i - amount
+      # this_budget.update(remaining_amount: new_amount)
+      # this_budget.save
+      # @owner.add_expenses(name, amount, id, category)
 
       my_expenses
     end
   end
 
+  
+
   def my_expenses
     puts "Kindly find your expenses bellow: #{@owner.name}"
     puts "===============================================\n"
     puts "\nExpense ID      | Name          | Amount      | Category     | Budget Month\n\n"
+    @owner.expenses.reload
     render_expenses(@owner.expenses)
     main_menu
   end
