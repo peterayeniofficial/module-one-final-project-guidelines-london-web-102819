@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
 
   def add_expenses(name, amount, id, category)
     Expense.create(name: name, amount: amount, budget_id: id, category: category)
+  end
 
   def get_budget_for_month(month)
     my_budgets.find { |b| b.month == month }
@@ -34,4 +35,5 @@ class User < ActiveRecord::Base
   def add_expenses(name, amount, budget_id, category)
     Expense.new(name: name, amount: amount, budget_id: budget_id, category: category)
   end
+
 end
