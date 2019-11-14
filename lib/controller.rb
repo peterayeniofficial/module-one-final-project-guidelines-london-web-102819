@@ -1,7 +1,7 @@
 
-require_relative '../lib/view.rb'
+require_relative "../lib/view.rb"
 require_all "lib"
-
+require "pry"
 
 module Controller
   include View
@@ -13,6 +13,8 @@ module Controller
     brand
     choices = ["Create Account", "Login", "Quit"]
     input = @@prompt.select("Please select a menu to get started", choices)
+    finish = false
+
     if input == "Create Account"
       create_account
     elsif input == "Login"
@@ -22,16 +24,16 @@ module Controller
     end
   end
 
-
   def create_account
     brand
+
     name = @@prompt.ask('What is your name?', required: true) do |q|
       q.validate(/\A[a-zA-Z]*\s[a-zA-Z]*\z/, 'Please enter First & Last Name Only')
     end
 
-    email = @@prompt.ask('What is your email?', required: true) { |q| q.validate :email }
+    email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
 
-    password = @@prompt.mask('Choose a password?', required: true) do |q|
+    password = @@prompt.mask("Choose a password?", required: true) do |q|
       q.validate(/\A[a-zA-Z0-9]*\z{5,15}/)
     end
     @owner = User.create_user(name, email, password)
@@ -43,9 +45,9 @@ module Controller
   end
 
   def log_in
-    email = @@prompt.ask('What is your email?', required: true) { |q| q.validate :email }
+    email = @@prompt.ask("What is your email?", required: true) { |q| q.validate :email }
 
-    password = @@prompt.mask('What is your password?', required: true) do |q|
+    password = @@prompt.mask("What is your password?", required: true) do |q|
       q.validate(/\A[a-zA-Z0-9]*\z{5,15}/)
     end
     @owner = User.login_check(email, password)
@@ -63,6 +65,7 @@ module Controller
   end
 
   def main_menu
+
     choices = ["Add a Budget", "Add Expenses", "My Budgets", "My Expenses", "Log Out", "Delete Account"]
     input = @@prompt.select("\nWhat will you like to do?", choices)
     if input == "Add a Budget"
@@ -90,6 +93,15 @@ module Controller
     end
   end
 
+  def process_add_expense
+    months = @owner.my_budgets.map { |budget| "#{budget.month}" }
+    month_selected = @@prompt.select("Please select a budget", months)
+    budget = @owner.get_budget_for_month(month_selected)
+
+    puts "Total amount: #{budget.amount}"
+    puts "Remaining amount: #{budget.remaining_amount}"
+  end
+
   def dashboard
     brand
     puts "#{@owner.name} Welcome"
@@ -97,7 +109,7 @@ module Controller
   end
 
   def delete_account
-    input = @@prompt.yes?('Are you sure you want to delete your Account?')
+    input = @@prompt.yes?("Are you sure you want to delete your Account?")
     if input == "yes"
       @owner.destroy
       sign_out
@@ -157,5 +169,4 @@ module Controller
     main_menu
   end
   
-
 end
