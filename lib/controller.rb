@@ -141,6 +141,7 @@ module Controller
       amount = @@prompt.ask('Please Enter Amount', required: true, convert: :float)
       new_amount = this_budget.remaining_amount.to_i - amount
       this_budget.update(remaining_amount: new_amount)
+      this_budget.save
       @owner.add_expenses(name, amount, id, category)
     
       my_expenses
