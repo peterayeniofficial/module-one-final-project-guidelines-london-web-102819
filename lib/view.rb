@@ -1,11 +1,9 @@
 module View
-
-  def brand 
+  def brand
     system("clear")
     logo
     puts "Manage all your expenses in one place"
     puts "\n\n"
-    
   end
 
   def logo
@@ -45,7 +43,6 @@ ______           _            _
                                    | |                            
                                    |_|                            
     "
-
   end
 
   def my_budgets_display
@@ -83,22 +80,33 @@ ______           _            _
     | |__| |  __| |  __| ||  __/  / ____ | (_| (_| (_) | |_| | | | | |_ 
     |_____/ \\___|_|\\___|\\__\\___| /_/    \\_\\___\\___\\___/ \\__,_|_| |_|\\__|
                                                                         
-                                                                     "   
+                                                                     "
+  end
+
+  def show_stats_display
+    puts "
+    /$$$$$$   /$$                 /$$             
+    /$$__  $$ | $$                | $$             
+   | $$  \__//$$$$$$    /$$$$$$  /$$$$$$   /$$$$$$$
+   |  $$$$$$|_  $$_/   |____  $$|_  $$_/  /$$_____/
+    \____  $$ | $$      /$$$$$$$  | $$   |  $$$$$$ 
+    /$$  \ $$ | $$ /$$ /$$__  $$  | $$ /$$\____  $$
+   |  $$$$$$/ |  $$$$/|  $$$$$$$  |  $$$$//$$$$$$$/
+    \______/   \___/   \_______/   \___/ |_______/     
+    "
   end
 
   def render_budgets(budgets)
-    budgets.each do |budget| 
-      puts budget.id.to_s.ljust(17) + budget.month.ljust(17) + "£"+ budget.amount.to_s.ljust(10) + "£"+ budget.remaining_amount.to_s
+    budgets.each do |budget|
+      puts budget.id.to_s.ljust(17) + budget.month.ljust(17) + "£" + budget.amount.to_s.ljust(10) + "£" + budget.remaining_amount.to_s
       puts "--------------------------------------------------------------\n"
     end
   end
 
   def render_expenses(expenses)
-    expenses.each do |expense| 
-      puts expense.id.to_s.ljust(17) + expense.name.ljust(19) + "£"+ expense.amount.to_s.ljust(13) + expense.category.ljust(16) + expense.budget.month
+    expenses.each do |expense|
+      puts expense.id.to_s.ljust(17) + expense.name.ljust(19) + "£" + expense.amount.to_s.ljust(13) + expense.category.ljust(16) + expense.budget.month
       puts "---------------------------------------------------------------------------------\n"
     end
   end
-
-
 end

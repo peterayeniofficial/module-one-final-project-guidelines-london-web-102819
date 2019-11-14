@@ -22,11 +22,17 @@ class User < ActiveRecord::Base
     }
   end
 
+  def get_all_budgets
+    Budget.all.select { |b| b.user_id == self.id }
+  end
+
+  def get_all_expenses
+    get_all_budgets.map { |b| b.get_all_expenses }.flatten
+  end
+
   def add_budget(month, amount)
     Budget.create(month: month, amount: amount, user_id: self.id, remaining_amount: amount)
   end
-
- 
 
   def get_budget_for_month(month)
     my_budgets.find { |b| b.month == month }
