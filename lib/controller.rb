@@ -247,6 +247,8 @@ module Controller
     else
       input = @@prompt.select("Are you sure you want to delete this expense?", choices)
       if input == "Yes"
+        expense.budget.remaining_amount += expense.amount
+        expense.budget.save
         expense.destroy
         puts "Your expense has been deleted."
         dashboard
