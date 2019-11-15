@@ -39,6 +39,7 @@ class User < ActiveRecord::Base
   end
 
   def add_expenses(name, amount, budget_id, category)
+
     Expense.create(name: name, amount: amount, budget_id: budget_id, category: category)
   end
 end
