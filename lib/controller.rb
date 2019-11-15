@@ -53,6 +53,7 @@ module Controller
     @owner = User.login_check(email, password)
     if @owner == nil
       puts "There is no existing account with that email and password. Please re-enter your account details, or create a new account."
+      sleep(4.5)
       welcome_screen
     else
       dashboard
@@ -79,9 +80,11 @@ module Controller
     choices = ["Update budget", "Delete budget", "Go back"]
     input = @@prompt.select("\nPlease select an option:", choices)
     if input == "Update budget"
-      id = @@prompt.ask("Please Enter the ID of the budget you want to update", required: true).to_i
+      id = @@prompt.ask("Please enter the ID of the budget you want to update:", required: true).to_i
       budget = @owner.budgets.find_by(id: id)
-      amount = @@prompt.ask("Please Enter the Amount", required: true).to_f
+      amount = @@prompt.ask("Please enter the updated amount:", required: true).to_f
+
+
       total_expenses = all_expenses_budget(id)
       rem_amount = amount - total_expenses
       # binding.pry
@@ -102,11 +105,11 @@ module Controller
     id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true).to_i
     budget = @owner.budgets.find_by(id: id)
     if budget == nil
-      puts "You don't have budget with that ID. Please select another ID."
+      puts "You don't have a budget with that ID. Please select another ID:"
       #main_menu
     else
       choices = ["Yes", "No"]
-      input = @@prompt.select("Are you sure you want to delete your budget?", choices)
+      input = @@prompt.select("Are you sure you want to delete this budget?", choices)
       if input == "Yes"
         budget.destroy
         dashboard
@@ -117,17 +120,26 @@ module Controller
   end
 
   def expense_menu
-    choices = ["Update expense", "Delete expense", "Go back"]
+    choices = ["Update expense amount", "Update expense category", "Delete expense", "Go back"]
     input = @@prompt.select("\nPlease select an option:", choices)
-    if input == "Update expense"
+    if input == "Update expense amount"
       id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true).to_i
       expense = @owner.expenses.find_by(id: id)
       amount = @@prompt.ask("Please enter the amount", required: true).to_f
       budget = Budget.all.find { |b| b.id == expense.budget_id }
       budget.update_expense(expense, amount)
 
-      my_budgets
-      budget_menu
+      my_expenses
+      expense_menu
+    elsif input == "Update expense category"
+      cat_choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Clothing", "Housing", "Savings"]
+      id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true).to_i
+      expense = @owner.expenses.find_by(id: id)
+      cat = @@prompt.select("Please select the new category:", cat_choices)
+      expense.update(category: cat)
+
+      my_expenses
+      expense_menu
     elsif input == "Delete expense"
       delete_expense
     else
@@ -209,7 +221,14 @@ module Controller
   def add_budget
     choices = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     month = @@prompt.select("Please select a month:", choices)
-    amount = @@prompt.ask("Please enter the budget amount:", required: true, convert: :float)
+    amount_check = @@prompt.ask("Please enter the budget amount:", required: true).to_f
+    if amount_check == 0 
+      puts "\nPlease enter a valid amount!!!"
+      sleep(4.5)
+      add_budget
+    else 
+      amount = amount_check 
+    end 
     @owner.add_budget(month, amount)
     my_budgets
     main_menu
@@ -265,6 +284,8 @@ module Controller
     #main_menu
   end
 
+
+
   def delete_account
     choices = ["Yes", "No"]
     input = @@prompt.select("Are you sure you want to delete your account?", choices)
@@ -297,4 +318,11 @@ module Controller
       end
     end
   end
+
+  def update_category
+    my_expenses
+    id = @@prompt.ask("Please enter the ID of the expense you want to update?", required: true).to_i
+    expense = @owner.expenses.find_by(id: id)
+  end 
+
 end
