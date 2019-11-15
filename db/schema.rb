@@ -14,11 +14,11 @@ ActiveRecord::Schema.define(version: 7) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "month"
-    t.integer "amount"
+    t.decimal "amount"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "remaining_amount"
+    t.decimal "remaining_amount"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 7) do
 
   create_table "expenses", force: :cascade do |t|
     t.string "name"
-    t.integer "amount"
+    t.decimal "amount"
     t.integer "budget_id"
     t.string "category"
     t.datetime "created_at", null: false
