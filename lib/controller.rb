@@ -79,14 +79,20 @@ module Controller
     choices = ["Update budget", "Delete budget", "Go back"]
     input = @@prompt.select("\nPlease select an option:", choices)
     if input == "Update budget"
-      id = @@prompt.ask("Please Enter the ID of the budget you want to update", required: true).to_i
-      budget = @owner.budgets.find_by(id: id)
-      amount = @@prompt.ask("Please Enter the Amount", required: true).to_f
-      total_expenses = all_expenses_budget(id)
-      rem_amount = amount - total_expenses
+      id = @@prompt.ask("Please Enter the ID of the budget you want to update", required: true)
+      while is_number?(id) == false
+        id = @@prompt.ask("PLease type a number")
+      end
+      budget = @owner.budgets.find_by(id: id.to_i)
+      amount = @@prompt.ask("Please Enter the Amount", required: true)
+      while is_number?(amount) == false
+        amount = @@prompt.ask("PLease type a number")
+      end
+      total_expenses = all_expenses_budget(id.to_i)
+      rem_amount = amount.to_i - total_expenses
       # binding.pry
-      budget.update(amount: amount)
-      budget.update(remaining_amount: rem_amount)
+      budget.update(amount: amount.to_i)
+      budget.update(remaining_amount: rem_amount.to_i)
       my_budgets
       budget_menu
     elsif input == "Delete budget"
@@ -99,8 +105,11 @@ module Controller
   def delete_budget
     choices = ["Yes", "No"]
     my_budgets
-    id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true).to_i
-    budget = @owner.budgets.find_by(id: id)
+    id = @@prompt.ask("Please enter the ID of the budget you want to delete?", required: true)
+    while is_number?(id) == false
+      id = @@prompt.ask("PLease type a number")
+    end
+    budget = @owner.budgets.find_by(id: id.to_i)
     if budget == nil
       puts "You don't have budget with that ID. Please select another ID."
       #main_menu
@@ -120,11 +129,18 @@ module Controller
     choices = ["Update expense", "Delete expense", "Go back"]
     input = @@prompt.select("\nPlease select an option:", choices)
     if input == "Update expense"
-      id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true).to_i
-      expense = @owner.expenses.find_by(id: id)
-      amount = @@prompt.ask("Please enter the amount", required: true).to_f
-      budget = Budget.all.find { |b| b.id == expense.budget_id }
-      budget.update_expense(expense, amount)
+      id = @@prompt.ask("Please enter the ID of the expense you want to update", required: true)
+      while is_number?(id) == false
+        id = @@prompt.ask("PLease type a number")
+      end
+      expense = @owner.expenses.find_by(id: id.to_i)
+      amount = @@prompt.ask("Please enter the amount", required: true)
+      while is_number?(amount) == false
+        amount = @@prompt.ask("PLease type a number")
+      end
+
+      budget = Budget.all.find { |b| b.id.to_i == expense.budget_id }
+      budget.update_expense(expense, amount.to_i)
 
       my_budgets
       budget_menu
@@ -133,6 +149,10 @@ module Controller
     else
       main_menu
     end
+  end
+
+  def is_number?(string)
+    true if Float(string) rescue false
   end
 
   def main_menu
@@ -209,8 +229,12 @@ module Controller
   def add_budget
     choices = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     month = @@prompt.select("Please select a month:", choices)
-    amount = @@prompt.ask("Please enter the budget amount:", required: true, convert: :float)
-    @owner.add_budget(month, amount)
+    amount = @@prompt.ask("Please enter the budget amount:", required: true)
+    while is_number?(amount) == false
+      amount = @@prompt.ask("PLease type a number")
+    end
+
+    @owner.add_budget(month, amount.to_i)
     my_budgets
     main_menu
   end
@@ -231,7 +255,10 @@ module Controller
   def add_expense
     my_budgets
     id = @@prompt.ask("Please enter the ID of the budget your new expense is for?", required: true)
-    this_budget = @owner.budgets.find_by(id: id)
+    while is_number?(id) == false
+      id = @@prompt.ask("PLease type a number")
+    end
+    this_budget = @owner.budgets.find_by(id: id.to_i)
     if this_budget == nil
       puts "You don't have budget with that ID, please add a new budget"
       main_menu
@@ -239,10 +266,13 @@ module Controller
       name = @@prompt.ask("What are you buying?", required: true)
       choices = ["Groceries", "Transportation", "Utilities", "Entertainment", "Clothing", "Housing", "Savings"]
       category = @@prompt.select("Please select a category", choices)
-      amount = @@prompt.ask("Please enter amount", required: true, convert: :float)
+      amount = @@prompt.ask("Please enter amount", required: true)
+      while is_number?(amount) == false
+        amount = @@prompt.ask("PLease type a number")
+      end
 
-      new_expense = @owner.add_expenses(name, amount, id, category)
-      new_expense.budget.remaining_amount -= amount
+      new_expense = @owner.add_expenses(name, amount.to_i, id.to_i, category)
+      new_expense.budget.remaining_amount -= amount.to_i
       new_expense.budget.save
       @owner.save
 
@@ -279,8 +309,11 @@ module Controller
   def delete_expense
     choices = ["Yes", "No"]
     my_expenses
-    id = @@prompt.ask("Please enter the ID of the expense you want to delete?", required: true).to_i
-    expense = @owner.expenses.find_by(id: id)
+    id = @@prompt.ask("Please enter the ID of the expense you want to delete?", required: true)
+    while is_number?(id) == false
+      id = @@prompt.ask("PLease type a number")
+    end
+    expense = @owner.expenses.find_by(id: id.to_i)
     if expense == nil
       puts "You don't have an expense with that ID. Please select another ID."
       delete_expense
