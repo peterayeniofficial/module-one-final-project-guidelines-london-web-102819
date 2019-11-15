@@ -91,10 +91,10 @@ module Controller
         amount = @@prompt.ask("PLease type a number")
       end
       total_expenses = all_expenses_budget(id.to_i)
-      rem_amount = amount.to_i - total_expenses
+      rem_amount = amount.to_f - total_expenses
    
-      budget.update(amount: amount.to_i)
-      budget.update(remaining_amount: rem_amount.to_i)
+      budget.update(amount: amount.to_f)
+      budget.update(remaining_amount: rem_amount.to_f)
       my_budgets
       budget_menu
     elsif input == "Delete budget"
@@ -143,7 +143,7 @@ module Controller
       end
 
       budget = Budget.all.find { |b| b.id.to_i == expense.budget_id }
-      budget.update_expense(expense, amount.to_i)
+      budget.update_expense(expense, amount.to_f)
 
       my_expenses
       expense_menu
@@ -247,7 +247,7 @@ module Controller
       amount = @@prompt.ask("PLease type a number")
     end
 
-    @owner.add_budget(month, amount.to_i)
+    @owner.add_budget(month, amount.to_f)
 
     my_budgets
     main_menu
@@ -285,8 +285,8 @@ module Controller
         amount = @@prompt.ask("PLease type a number")
       end
 
-      new_expense = @owner.add_expenses(name, amount.to_i, id.to_i, category)
-      new_expense.budget.remaining_amount -= amount.to_i
+      new_expense = @owner.add_expenses(name, amount.to_f, id.to_i, category)
+      new_expense.budget.remaining_amount -= amount.to_f
       new_expense.budget.save
       @owner.save
 
