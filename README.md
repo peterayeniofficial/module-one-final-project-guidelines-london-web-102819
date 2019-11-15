@@ -52,4 +52,7 @@ Budgety is a CLI App that helps you manage your monthly budgets. Track your expe
 ### List Espenses
 ![Alt text](lib/images/8@2x.png?raw=true "Title")
 
+## Conclussion
+Thank you for checking out our projects
+
 
