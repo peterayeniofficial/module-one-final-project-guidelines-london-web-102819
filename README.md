@@ -8,13 +8,16 @@ A Ruby CLI App for Managing Expenses developed as part of the requirement for Fl
 
 #### Anastasia Pankina
 ![Alt text](lib/images/11@2x.png?raw=true "Title")
+**GitHub:** [Download and Install Ruby](https://github.com/siapankina)
 
 
 #### Andrew Lewell
 ![Alt text](lib/images/12@2x.png?raw=true "Title")
+**GitHub:** [Download and Install Ruby](https://github.com/andrew-lewell)
 
-### Anastasia Pankina
+### Peter Ayeni
 ![Alt text](lib/images/13@2x.png?raw=true "Title")
+**GitHub:** [Download and Install Ruby](https://github.com/peterayeniofficial/)
 
 ## How to install the app
 
@@ -29,3 +32,18 @@ A Ruby CLI App for Managing Expenses developed as part of the requirement for Fl
 
 
 ## User Guides
+
+Budgety is a CLI App that helps you manage your monthly budgets. Track your expenses and see where most of your hard earn money is going to.
+
+### Create Account
+![Alt text](lib/images/2@2x.png?raw=true "Title")
+
+
+### Add a Budget
+![Alt text](lib/images/5@2x.png?raw=true "Title")
+
+
+### List Budgets
+![Alt text](lib/images/6@2x.png?raw=true "Title")
+
+
